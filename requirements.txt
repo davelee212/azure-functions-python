@@ -1,0 +1,7 @@
+# Do not include azure-functions-worker as it may conflict with the Azure Functions platform
+
+azure-functions
+requests
+beautifulsoup4
+ask-sdk-core
+ask-sdk-webservice-support
