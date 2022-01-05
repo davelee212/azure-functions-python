@@ -15,6 +15,7 @@ from ask_sdk_core.skill_builder import CustomSkillBuilder
 from ask_sdk_core.api_client import DefaultApiClient
 from ask_sdk_core.utils import is_request_type, is_intent_name
 from ask_sdk_model.ui import AskForPermissionsConsentCard
+from ask_sdk_model.ui import StandardCard
 from ask_sdk_model.services import ServiceException
 
 permissions = ["read::alexa:device:all:address"]
@@ -144,8 +145,7 @@ class ReadCollectionCalender(AbstractRequestHandler):
             else:
                 requestlogging = False
         except KeyError as error:
-            requestlogging = True
-            logging.info('ISTESTENV configuration value not found so assuming not set (likely running in production) so not enabling logging of requests.')
+            requestlogging = False
 
         req_envelope = handler_input.request_envelope
         response_builder = handler_input.response_builder
@@ -305,8 +305,21 @@ class ReadCollectionCalender(AbstractRequestHandler):
             waste_types_text = waste_types_text.replace('/',' and ')
             print(waste_types_text)
 
-            # Build the string that will be returned for Alexa to speak.
+            # Build the output strings
             speak_output = 'The rubbish collection day for ' + street + ' is ' + collectionDay + '.  The next collection is for ' + waste_types_text + '.'
+            text_output = 'Collection day: ' + collectionDay + '.\n\n  Your next collection: ' + waste_types_text + '.'
+
+            response_builder.set_card(
+                StandardCard(
+                    title="Rubbish Day",
+                    text=text_output
+                    #,
+                    #image=ui.Image(
+                    #    small_image_url="<Small Image URL>",
+                    #    large_image_url="<Large Image URL>"
+                    #)
+                )
+            )
             logging.info('Successfully looked up and returned collection schedule.')
 
             response_builder.speak(speak_output)
